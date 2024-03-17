@@ -2,24 +2,20 @@
 
 # DATOS CONTENEDOR Y BACKUP
 
-ContainerName="bitwarden"
+ContainerName="vaultwarden"
 ContainerDataDir="/home/pi/docker/bitwarden/data/"
 BackupDataDir="/home/pi/backup/"
 
 # EMPAQUETADO Y COMPRESIÓN
 # Algoritmos definidos y usados por el comando tar: gzip, bzip2, xz
-
 CompressorList=("gzip" "bzip2" "xz")
-
-CompressionType="xz"  # Patrón por defecto
+CompressionType="gzip"  # Patrón por defecto
 
 # Directorios relativos (rel) o Ruta Absoluta (abs)
 PathDirList=("rel" "abs")
-
 PathDir="rel"
 
 # ARCHIVO DE REGISTRO
-
 ActiveLog=1  # Activamos el registro en el fichero log definido. 0=No,1=Si
 LogFile="/var/log/vwbackup.log"
 readonly msg_init="vwbackup | "
