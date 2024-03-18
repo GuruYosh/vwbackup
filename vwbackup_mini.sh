@@ -34,10 +34,21 @@ LogFile="/var/log/vwbackup.log"
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
 # Algoritmos definidos y usados por el comando tar: gzip, bzip2, xz
-readonly CompressorList=("gzip" "bzip2" "xz")
+declare -A CompressorOptions=(
+	["gzip"]="z"
+	["bzip2"]="j"
+	["xz"]="J"
+)
+
+# Extensiones según algoritmo usado en comando tar
+declare -A FileExtensions=(
+    ["gzip"]="tar.gz"
+	["bzip2"]="tar.bz2"
+	["xz"]="tar.xz"
+)
 
 # Directorios relativos (rel) o Ruta Absoluta (abs)
-readonly PathDirList=("rel" "abs")
+readonly PathDirList="rel abs"
 
 # Cabecera de los mensajes
 readonly msg_init="vwbackup | "
@@ -59,8 +70,8 @@ fi
 ! [[ -d "${BackupDataDir}" ]] &&  echo "${msg_init}${BackupDataDir} no existe" && ((error++))
 ! [[ -w "${BackupDataDir}" ]] &&  echo "${msg_init}${BackupDataDir} ::: no tiene permisos de escritura" && ((error++))
 
-! [[ " ${CompressorList[*]} " =~ " ${CompressionType} " ]] && echo "${msg_init}Error. \"${CompressionType}\" no es un tipo de compresión válido. Tipos válidos: ${CompressorList[*]}" && ((error++))
-! [[ " ${PathDirList[*]} " =~ " ${PathDir} " ]] && echo "${msg_init}Error. \"${PathDir}\" no es un tipo definido de uso de rutas al empaquetar. Tipos válidos: ${PathDirList[*]}"  && ((error++))
+[[ -z "${CompressorOptions["$CompressionType"]}" ]] && echo "${msg_init}Error. \"${CompressionType}\" no es un tipo de compresión válido. Tipos válidos: ${!CompressorOptions[*]}" && ((error++))
+! [[ " ${PathDirList} " =~ " ${PathDir} " ]] && echo "${msg_init}Error. \"${PathDir}\" no es un tipo definido de uso de rutas al empaquetar. Tipos válidos: ${PathDirList}"  && ((error++))
 
 if [[ "${ActiveLog}" -eq 1 ]]; then
 	! [[ -e "${LogFile}" ]] &&  echo "${msg_init}${LogFile} no existe" && ((error++))
@@ -68,6 +79,7 @@ if [[ "${ActiveLog}" -eq 1 ]]; then
 fi
 
 [[ ${error} -ge 1 ]] && ( echo "Se han producido uno o más errores en la configuración de datos iniciales (${error})"; exit 1 )
+
 
 # Controla si el contenedor estaba en ejecución antes del backup para pararlo y arracarlo posteriormente
 ContainerWasRunning=0
@@ -81,18 +93,13 @@ fi
 
 # Empaquetamos y comprimimos directorio
 
-case "${CompressionType}" in
-	"gzip") 	CompressionOption="z"; FileExtension="tgz";;
-	"bzip2")	CompressionOption="j"; FileExtension="tbz";;
-	"xz")		CompressionOption="J"; FileExtension="txz";;
-esac
 
 # Nombre que tendrá el fichero con el backup
-BackupDataFile="${BackupDataDir}${ContainerName}_`date +%Y%m%d%H%M%S`.${FileExtension}"
+BackupDataFile="${BackupDataDir}${ContainerName}_$(date +%Y%m%d%H%M%S).${FileExtensions["${CompressionType}"]}"
 
 case "${PathDir}" in
-	"rel")	tar -c"${CompressionOption}"f "${BackupDataFile}" -C "${ContainerDataDir}" . > /dev/null 2>&1;;
-	"abs")	tar -c"${CompressionOption}"f "${BackupDataFile}" "${ContainerDataDir}" > /dev/null 2>&1;;
+	"rel")	tar -c"${CompressorOptions["${CompressionType}"]}"f "${BackupDataFile}" -C "${ContainerDataDir}" . > /dev/null 2>&1;;
+	"abs")	tar -c"${CompressorOptions["${CompressionType}"]}"f "${BackupDataFile}" "${ContainerDataDir}" > /dev/null 2>&1;;
 esac
 
 #[ $? ] && echo "tar.gz sin errores"
