@@ -1,30 +1,51 @@
 #!/bin/bash
 
-# DATOS CONTENEDOR Y BACKUP
+# PARÁMETROS PARA DEFINIR FUNCIONAMIENTO DEL BACKUP
 
-ContainerName="vaultwarden"
+# Nombre del contenedor vaultwarden
+ContainerName="bitwarden"
+
+# Path del directorio donde se guardan los datos del contenedor
 ContainerDataDir="/home/pi/docker/bitwarden/data/"
+
+# Path del directorio donde se guardará el backup de los datos
 BackupDataDir="/home/pi/backup/"
 
-# EMPAQUETADO Y COMPRESIÓN
-# Algoritmos definidos y usados por el comando tar: gzip, bzip2, xz
-CompressorList=("gzip" "bzip2" "xz")
-CompressionType="gzip"  # Patrón por defecto
+# PARÁMETROS OPCIONALES. NO HACE FALTA CONFIGURAR
 
-# Directorios relativos (rel) o Ruta Absoluta (abs)
-PathDirList=("rel" "abs")
+# Algoritmo de compresión usado al comprimir el tar
+CompressionType="gzip"  # Disponibles: gzip, bzip2 o xz
+
+# Uso de directorios relativos o path absoluto en el backup
+# Disponibles: rel (relativo) o abs (absoluto)
 PathDir="rel"
 
-# ARCHIVO DE REGISTRO
-ActiveLog=1  # Activamos el registro en el fichero log definido. 0=No,1=Si
+# REGISTRO DE OPERACIONES (LOGS)
+# Activamos el registro en el fichero log definido. 0=No,1=Si
+ActiveLog=0
+# Fichero log donde se guardará el registro. Debe ser accesible y escribible por el script
 LogFile="/var/log/vwbackup.log"
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+# FIN DE PARÁMETROS
+#
+#     No toques a partir de aquí si no sabes :)
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+
+# Algoritmos definidos y usados por el comando tar: gzip, bzip2, xz
+readonly CompressorList=("gzip" "bzip2" "xz")
+
+# Directorios relativos (rel) o Ruta Absoluta (abs)
+readonly PathDirList=("rel" "abs")
+
+# Cabecera de los mensajes
 readonly msg_init="vwbackup | "
 
+# Función para loguear en fichero definido
 function loggger { echo "$(date +"%F %T")" "$1" >> "$LogFile"; }
 
-###################
-
-# COMPROBACIONES PREVIAS
+# COMPROBACIONES PREVIAS Y ERRORES
 
 error=0
 
@@ -48,6 +69,7 @@ fi
 
 [[ ${error} -ge 1 ]] && ( echo "Se han producido uno o más errores en la configuración de datos iniciales (${error})"; exit 1 )
 
+# Controla si el contenedor estaba en ejecución antes del backup para pararlo y arracarlo posteriormente
 ContainerWasRunning=0
 
 # Paramos contenedor si estuviera ejecutándose
@@ -65,7 +87,7 @@ case "${CompressionType}" in
 	"xz")		CompressionOption="J"; FileExtension="txz";;
 esac
 
-
+# Nombre que tendrá el fichero con el backup
 BackupDataFile="${BackupDataDir}${ContainerName}_`date +%Y%m%d%H%M%S`.${FileExtension}"
 
 case "${PathDir}" in
