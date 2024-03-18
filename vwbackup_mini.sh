@@ -14,15 +14,15 @@ BackupDataDir="/home/pi/backup/"
 # PARÁMETROS OPCIONALES. NO HACE FALTA CONFIGURAR
 
 # Algoritmo de compresión usado al comprimir el tar
-CompressionType="gzip"  # Disponibles: gzip, bzip2 o xz
+CompressionType="xz"  # Disponibles: gzip, bzip2 o xz
 
 # Uso de directorios relativos o path absoluto en el backup
 # Disponibles: rel (relativo) o abs (absoluto)
-PathDir="rel"
+PathDir="abs"
 
 # REGISTRO DE OPERACIONES (LOGS)
 # Activamos el registro en el fichero log definido. 0=No,1=Si
-ActiveLog=0
+ActiveLog=1
 # Fichero log donde se guardará el registro. Debe ser accesible y escribible por el script
 LogFile="/var/log/vwbackup.log"
 
@@ -50,8 +50,11 @@ declare -A FileExtensions=(
 # Directorios relativos (rel) o Ruta Absoluta (abs)
 readonly PathDirList="rel abs"
 
+# Nombre del script de backup
+readonly ScriptName="vwbackup"
+
 # Cabecera de los mensajes
-readonly msg_init="vwbackup | "
+readonly msg_init="${ScriptName} | "
 
 # Función para loguear en fichero definido
 function loggger { echo "$(date +"%F %T")" "$1" >> "$LogFile"; }
@@ -81,14 +84,17 @@ fi
 [[ ${error} -ge 1 ]] && ( echo "Se han producido uno o más errores en la configuración de datos iniciales (${error})"; exit 1 )
 
 
+[[ "${ActiveLog}" -eq 1 ]] && loggger "${msg_init}Comenzado backup de ${ContainerName}"
+
 # Controla si el contenedor estaba en ejecución antes del backup para pararlo y arracarlo posteriormente
 ContainerWasRunning=0
 
 # Paramos contenedor si estuviera ejecutándose
 
 if docker ps  --format '{{.Names}}' | grep -q "^${ContainerName}\$"; then
-	docker stop "${ContainerName}" > /dev/null 2>&1
+	docker stop "${ContainerName}" > /dev/null 2>&1	
 	ContainerWasRunning=1
+	[[ "${ActiveLog}" -eq 1 ]] && loggger "${msg_init}Parando contenedor ${ContainerName}"
 fi
 
 # Empaquetamos y comprimimos directorio
@@ -98,8 +104,12 @@ fi
 BackupDataFile="${BackupDataDir}${ContainerName}_$(date +%Y%m%d%H%M%S).${FileExtensions["${CompressionType}"]}"
 
 case "${PathDir}" in
-	"rel")	tar -c"${CompressorOptions["${CompressionType}"]}"f "${BackupDataFile}" -C "${ContainerDataDir}" . > /dev/null 2>&1;;
-	"abs")	tar -c"${CompressorOptions["${CompressionType}"]}"f "${BackupDataFile}" "${ContainerDataDir}" > /dev/null 2>&1;;
+	"rel")	tar -c"${CompressorOptions["${CompressionType}"]}"f "${BackupDataFile}" -C "${ContainerDataDir}" . > /dev/null 2>&1
+			[[ $? -eq 0 ]] && [[ "${ActiveLog}" -eq 1 ]] && loggger "${msg_init}Backup realizado en ${BackupDataFile}"
+			;;
+	"abs")	tar -c"${CompressorOptions["${CompressionType}"]}"f "${BackupDataFile}" "${ContainerDataDir}" > /dev/null 2>&1
+			[[ $? -eq 0 ]] && [[ "${ActiveLog}" -eq 1 ]] && loggger "${msg_init}Backup realizado en ${BackupDataFile}"
+			;;
 esac
 
 #[ $? ] && echo "tar.gz sin errores"
@@ -108,4 +118,5 @@ esac
 
 if [ $ContainerWasRunning -eq 1 ]; then
 	docker start ${ContainerName} > /dev/null 2>&1
+	[[ "${ActiveLog}" -eq 1 ]] && loggger "${msg_init}Arrancando contenedor ${ContainerName}"
 fi
