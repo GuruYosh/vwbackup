@@ -5,7 +5,7 @@ Realiza fácilmente una copia de seguridad de los datos del contenedor docker de
 
 :arrow_forward: Actualmente sólo soporta la instalación con SQLite :arrow_backward:
 
-Es un script realizado en shell de *Bash* que, para su automatización, debería ejecutarse de manera periódica mediante una tarea en *cron* por ejemplo para posteriormente integrarlo en su sistema de copias de seguridad.
+Es un script realizado en shell de *Bash* que, para su automatización, debería ejecutarse de manera periódica mediante una tarea en *cron* por ejemplo para posteriormente integrarlo en su sistema de copias de seguridad. Está diseñado únicamente para cumplir con mis propios requisitos de respaldo y como un mero ejercicio de programación de scripts en shell de Bash :relaxed:.
 
 ### Metodología
 
@@ -13,11 +13,13 @@ Para hacer una copia de seguridad de tu *vaultwarden* se sigue uno de los proced
 
 ### Instalación de Vaultwarden con SQLite
 
-Los procedimientos posibles serían:
+En la instalación que nos ocupa los procedimientos posibles serían:
  1. Copiar toda la carpeta "**data**" con los datos que está montada como *volumen* de nuestro contenedor desplegado incluyendo los ficheros de SQLite. Por defecto son `db.sqlite3`, `db.sqlite3-shm` y `db.sqlite3-wal` y asegurarse de que la base de datos no esté en uso. Lo mejor para ello, parar temporalmente el contenedor.
  2. La otra opción es copiar igualmente la carpeta "**data**" sin los ficheros correspondientes a SQLite y hacer una copia de seguridad de la base de datos mediante el comando `.backup` del CLI de SQLite (`sqlite3`), recomendando igualmente que la base de datos no esté activa aunque 
 
-En principio se usa la **opción 1** para realizar la copia de seguridad de todos los datos. Próximamente se podrá elegir si se quiere añadir un volcado de la base de datos a la carpeta donde se guardan los backup.
+En principio se usa la **opción 1** para realizar la copia de seguridad de todos los datos.
+
+Futuro:  podría elegirse si se quiere añadir un volcado de la base de datos a la carpeta donde se guardan los backup.
 
 ## Uso de VWBackup
 El script contiene dos partes. Una de configuración previa y otra operacional del propio backup. Por otro lado, el script tiene un modo depuración que nos servirá para chequear los parámetros sin realizar el backup propiamente.
@@ -57,7 +59,6 @@ Para usar el modo depuración sólo hay que añadir el parámetro -d o --debug e
 
 Se evaluará la idoneidad de los parámetros, pero no se realizará el backup. De igual manera, en cada ejecución sin modo depuración activado también se evalúan los parámetros. Si se encuentra algún error el script parará su ejecución.
 **Ejemplos**
-
 Verificación sin errores
 
     pi@rpi4:~/scripts/backup $./vwbackup.sh  --debug
@@ -93,8 +94,15 @@ Una vez revisados los parámetros proporcionados se realiza la copia de segurida
  2. Se realiza el *empaquetado* y *compresión* de los ficheros que intervienen en el mismo (*ContainerDataDir*) mediante el comando *tar*, se comprime con el compresor elegido y se lleva al directorio elegido (*BackupDataDir*). Por defecto se utiliza *gzip* por ser el más común. Elige en los parámetros el que quieras de entre los disponibles.
  3. Arranca nuevamente el contenedor de *vaultwarden* si estuvo en ejecución.
 
-**3. Automatización del script y de las copias de seguridad**
+**4. Automatización del script y de las copias de seguridad**
 
-Forma parte del mantenimiento de tu sistema. Puedes automatizar la ejecución diaria del mismo (*cron*) y mantener, por ejemplo, las últimas 7 copias y de la misma forma incluir tu copia de seguridad de *vaultwarden* en tu sistema de respaldos. Ya sabes la regla 3... 2 ...1 :bomb::collision: ( [G](https://www.google.com/search?q=regla%203%202%201%20backup) [B](https://www.bing.com/search?q=regla%203%202%201%20backup) [D](https://www.google.com/search?q=regla%203%202%201%20backup) )
+Forma parte del mantenimiento de tu sistema. Puedes automatizar la ejecución diaria del mismo (*cron*) y mantener, por ejemplo, las últimas 7 copias y de la misma forma incluir tu copia de seguridad de *vaultwarden* en tu sistema de respaldos. Ya sabes la regla 3 ... 2 ... 1 :bomb::collision: ( [G](https://www.google.com/search?q=regla%203%202%201%20backup) [B](https://www.bing.com/search?q=regla%203%202%201%20backup) [D](https://www.google.com/search?q=regla%203%202%201%20backup) )
 
+## Contacto
+
+Si prefieres charlar, normalmente estamos en Telegram en el grupo **[Vaultwarden ES](https://t.me/vaultwarden_es)**. ¡Únete a nosotros!
+
+Una pregunta, sugerencias o nuevas funciones o para obtener ayuda[ \[Discusiones de GitHub\]](https://github.com/GuruYosh/vwbackup/discussions).
+
+Si detectas algún error o fallo en VWBackup, [abre una incidencia](https://github.com/GuruYosh/vwbackup/issues) (Issues).
 
