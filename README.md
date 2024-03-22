@@ -1,4 +1,5 @@
 
+
 # VWBackup
 
 Realiza fácilmente una copia de seguridad de los datos del contenedor docker de [Vaultwarden](https://github.com/dani-garcia/vaultwarden).
@@ -22,7 +23,7 @@ Una vez descargado el script recuerda darle permisos de ejecución:
 > 4 -rw**x**r--r--  1 user group  485 mar 16 18:35 vwbackup.sh
 
 
-**1. Configuración previa del backup**.  Al comienzo del script existen una serie de parámetros obligatorios y opcionales. Edita el fichero `vwbackup.sh` con tu editor favorito y modifica los parámetros según tu instalación.
+**1. Configuración previa del backup**.  Al comienzo del script existen una serie de parámetros obligatorios y opcionales. Edita el fichero `vwbackup.sh` con tu editor favorito y modifica los parámetros según tu instalación y necesidades.
 
 | Parámetro | Nota | Ejemplo |
 | -------------------|---------------------------------|-------------|
@@ -35,6 +36,8 @@ Una vez descargado el script recuerda darle permisos de ejecución:
 |LogFile| Ruta completa del fichero donde se hará el registro de eventos. El fichero debe estar creado y el usuario que lanza el script debe tener permisos de escritura. Si ActiveLog=0 no se necesita y puede estar vacío.| "/path_directorio_docker/vaultwarden/vwbackup.log/"|
 
 **2. Acceso al modo depuración o modo debug**
-Para acceder al modo depuración sólo hay que añadir el parámetro -d o --debug en la ejecución del script
+Para usar el modo depuración sólo hay que añadir el parámetro -d o --debug en la ejecución del script
 
 > ./vwbackup.sh --debug
+
+Se evaluará la idoneidad de los parámetros, pero no se realizará el backup. De igual manera en cada ejecución sin modo debug también se evaluan los parámetros. 
