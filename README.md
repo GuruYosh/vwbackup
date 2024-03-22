@@ -57,19 +57,21 @@ Para usar el modo depuración sólo hay que añadir el parámetro -d o --debug e
 
 Se evaluará la idoneidad de los parámetros, pero no se realizará el backup. De igual manera, en cada ejecución sin modo depuración activado también se evalúan los parámetros. Si se encuentra algún error el script parará su ejecución.
 **Ejemplos**
+
 Verificación sin errores
 
-        pi@rpi4:~/scripts/backup $./vwbackup.sh  --debug
-        vwbackup | 0.99
-        ✔ Contenedor: vaultwarden
-        ✔ Directorio de datos: "/home/pi/docker/vaultwarden/data/"
-        ✔ Directorio de backup: "/home/pi/backup/"
-        ✔ Tipo de compresión: "gzip"
-        ✔ Tipo de ruta de empaquetado: "relativa"
-        ✔ Registro de eventos: Si
-        ✔ Fichero de registro: "/home/pi/docker/vaultwarden/vwbackup.log"
-        
+    pi@rpi4:~/scripts/backup $./vwbackup.sh  --debug
+    vwbackup | 0.99
+    ✔ Contenedor: vaultwarden
+    ✔ Directorio de datos: "/home/pi/docker/vaultwarden/data/"
+    ✔ Directorio de backup: "/home/pi/backup/"
+    ✔ Tipo de compresión: "gzip"
+    ✔ Tipo de ruta de empaquetado: "relativa"
+    ✔ Registro de eventos: Si
+    ✔ Fichero de registro: "/home/pi/docker/vaultwarden/vwbackup.log"
+
     Parece que la configuración no tiene ningún error aparente :) BACKING UP!!
+    
 Verificación con varios errores:
 
     pi@rpi4:~/scripts/backup $./vwbackup.sh  -d
