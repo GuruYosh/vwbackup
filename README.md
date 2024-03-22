@@ -14,8 +14,15 @@ Los procedimientos posibles serían:
 En principio se usa la **opción 1** para realizar la copia de seguridad de todos los datos. Próximamente se podrá elegir si se quiere añadir un volcado de la base de datos a la carpeta donde se guardan los backup.
 
 ## Uso de VWBackup
-El script contiene dos partes. Una de configuración previa y otra operacional del propio backup.
-1. Configuración previa del backup
+El script contiene dos partes. Una de configuración previa y otra operacional del propio backup. Por otro lado, el script tiene un modo depuración que nos servirá para chequear los parámetros sin realizar el backup propiamente.
+
+Una vez descargado el script recuerda darle permisos de ejecución:
+
+> chmod u+x vwbackup.sh
+> 4 -rw**x**r--r--  1 user group  485 mar 16 18:35 vwbackup.sh
+
+
+**1. Configuración previa del backup**.  Al comienzo del script existen una serie de parámetros obligatorios y opcionales. Edita el fichero `vwbackup.sh` con tu editor favorito y modifica los parámetros según tu instalación.
 
 | Parámetro | Nota | Ejemplo |
 | -------------------|---------------------------------|-------------|
@@ -26,3 +33,8 @@ El script contiene dos partes. Una de configuración previa y otra operacional d
 |PathDir| Uso de ruta relativa o ruta absoluta al crear en el backup| Por defecto se utiliza la ruta relativa|
 |ActiveLog|Si queremos registro de eventos en un fichero log definido (LogFile). Parámetros disponible 0=No,1=Si| Por defecto será 0|
 |LogFile| Ruta completa del fichero donde se hará el registro de eventos. El fichero debe estar creado y el usuario que lanza el script debe tener permisos de escritura. Si ActiveLog=0 no se necesita y puede estar vacío.| "/path_directorio_docker/vaultwarden/vwbackup.log/"|
+
+**2. Acceso al modo depuración o modo debug**
+Para acceder al modo depuración sólo hay que añadir el parámetro -d o --debug en la ejecución del script
+
+> ./vwbackup.sh --debug
