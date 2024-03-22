@@ -25,4 +25,4 @@ El script contiene dos partes. Una de configuración previa y otra operacional d
 |CompressionType|Algoritmo de compresión utilizado para comprimir el empaquetado de los ficheros de tar. Disponibles: gzip, bzip2 y xz| Por defecto se utiliza gzip|
 |PathDir| Uso de ruta relativa o ruta absoluta al crear en el backup| Por defecto se utiliza la ruta relativa|
 |ActiveLog|Si queremos registro de eventos en un fichero log definido (LogFile). Parámetros disponible 0=No,1=Si| Por defecto será 0|
-|LogFile| Ruta completa del fichero donde se hará el registro de eventos. El fichero debe estar creado y el usuario que lanza el script debe tener permisos de escritura.| Si ActiveLog=0 no se necesita y puede estar vacío.| "/path_directorio_docker/vaultwarden/vwbackup.log/"|
+|LogFile| Ruta completa del fichero donde se hará el registro de eventos. El fichero debe estar creado y el usuario que lanza el script debe tener permisos de escritura. Si ActiveLog=0 no se necesita y puede estar vacío.| "/path_directorio_docker/vaultwarden/vwbackup.log/"|
