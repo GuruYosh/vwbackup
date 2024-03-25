@@ -95,7 +95,7 @@ if ! [[ "${ActiveLog}" =~ ^[01]$ ]]; then errortype+="a"; fi
 
 if ! [[ "${errortype}" =~ "a" ]]; then
 	if [[ ${ActiveLog} -eq 1 ]]; then
-		if ! [[ -e "${LogFile}" ]]; then errortype+="l"; fi
+		if ! [[ -f "${LogFile}" ]]; then errortype+="l"; fi
 		
 		if ! [[ "${errortype}" =~ "l" ]]; then
 			if ! [[ -w "${LogFile}" ]]; then errortype+="L"; fi
