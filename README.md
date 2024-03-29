@@ -19,6 +19,14 @@ En la instalación que nos ocupa los procedimientos posibles serían:
 
 En principio se usa la **opción 1** para realizar la copia de seguridad de todos los datos.
 
+Características que permite el script:
+
+ - Definición del nombre del contenedor, directorio donde están los datos de vaultwarden y directorio donde se guardarán las copias de seguridad.
+ - Realiza compresión del archivo tar creado. Se admite compresión gzip, bzip2 y xz
+ - Elegir entre una copia de datos relativa al directorio de datos o absoluta al directorio raiz (/)
+ - Rotación de ficheros en el directorio de backups con el fin de mantener un número limitado de copias
+ - Registro de eventos del script en un fichero determinado.
+
 Futuro:  podría elegirse si se quiere añadir un volcado de la base de datos a la carpeta donde se guardan los backup.
 
 ## Uso de VWBackup
@@ -45,8 +53,8 @@ El script contiene dos partes. Una de configuración previa y otra operacional d
 | BackupDataDir | Path del directorio donde se guardarán los ficheros del backup. El usuario que lanza el script debe tener permisos de escritura |"/home/user/backup/"|
 |CompressionType|Algoritmo de compresión utilizado para comprimir el empaquetado de los ficheros de tar. Disponibles: gzip, bzip2 y xz| Por defecto se utiliza gzip|
 |PathDir| Uso de ruta relativa o ruta absoluta al crear el backup *| Por defecto se utiliza la ruta relativa|
-|ActiveLog|Si queremos registro de eventos en un fichero log definido en LogFile. Parámetros disponible 0=No,1=Si| Por defecto será 0|
-|LogFile| Ruta completa del fichero donde se hará el registro de eventos. El fichero debe estar creado y el usuario que lanza el script debe tener permisos de escritura. Si ActiveLog=0 no se necesita y puede estar vacío.| "/path_directorio_docker/vaultwarden/vwbackup.log/"|
+|LogFile| Ruta completa del fichero donde se hará el registro de eventos. El fichero debe estar creado y el usuario que lanza el script debe tener permisos de escritura. Si está vacío no hay registro de eventos.|/path_directorio_docker/vaultwarden/vwbackup.log/". Por defecto LogFile=""|
+|MaxNumBackup|Rotación de backups. Mantiene un número determinado de ficheros en la carpeta de backups. El valor 0 se utilizará para no realizar rotación.|Por defecto será 0|
 
 > **Ruta absoluta**: ruta completa de un archivo o directorio desde el directorio raíz.
 > **Ruta relativa**: ruta de un archivo o directorio en relación con el directorio definido. Depende del directorio desde el cual se está ejecutando el comando.
@@ -58,7 +66,9 @@ Para usar el modo depuración sólo hay que añadir el parámetro -d o --debug e
 > ./vwbackup.sh --debug
 
 Se evaluará la idoneidad de los parámetros, pero no se realizará el backup. De igual manera, en cada ejecución sin modo depuración activado también se evalúan los parámetros. Si se encuentra algún error el script parará su ejecución.
+
 **Ejemplos**
+
 Verificación sin errores
 
     pi@rpi4:~/scripts/backup $./vwbackup.sh  --debug
@@ -68,6 +78,7 @@ Verificación sin errores
     ✔ Directorio de backup: "/home/pi/backup/"
     ✔ Tipo de compresión: "gzip"
     ✔ Tipo de ruta de empaquetado: "relativa"
+    ✔ Rotación de backups: Si. Núm. de Ficheros: 3
     ✔ Registro de eventos: Si
     ✔ Fichero de registro: "/home/pi/docker/vaultwarden/vwbackup.log"
 
@@ -82,6 +93,7 @@ Verificación con varios errores:
     ✔ Directorio de backup: "/home/pi/backup/" | ✘ Sin permisos de escritura 
     ✔ Tipo de compresión: "gzip"
     ✘ Tipo de ruta de empaquetado: "relativa3" no definida. Tipos válidos: relativa absoluta
+    ✔ Rotación de backups: No
     ✔ Registro de eventos: No
     
     La configuración inicial contiene errores (4)
@@ -105,4 +117,3 @@ Si prefieres charlar, normalmente estamos en Telegram en el grupo **[Vaultwarden
 Una pregunta, sugerencias o nuevas funciones o para obtener ayuda[ \[Discusiones de GitHub\]](https://github.com/GuruYosh/vwbackup/discussions).
 
 Si detectas algún error o fallo en VWBackup, [abre una incidencia](https://github.com/GuruYosh/vwbackup/issues) (Issues).
-
