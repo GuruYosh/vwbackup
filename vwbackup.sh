@@ -193,7 +193,7 @@ else
 fi
 
 # Rotación de backups. Se dejan los últimos MaxNumBackup si > 0
-set -x
+
 if [[ "${MaxNumBackup}" -ge 1 ]]; then
 	if cd "${BackupDataDir}" > /dev/null 2>&1; then
 		#rm $(ls -t ${ContainerName}_*.* | awk "NR>${MaxNumBackup}")
