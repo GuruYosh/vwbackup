@@ -32,10 +32,14 @@ Futuro:  podría elegirse si se quiere añadir un volcado de la base de datos a 
 ## Uso de VWBackup
 El script contiene dos partes. Una de configuración previa y otra operacional del propio backup. Por otro lado, el script tiene un modo depuración que nos servirá para chequear los parámetros sin realizar el backup propiamente.
 
- - Descarga el script del repositorio. 
+ - Descarga el script del repositorio.
+```shell
+wget https://raw.githubusercontent.com/GuruYosh/vwbackup/refs/heads/main/vwbackup.sh
+```
  - Dale permisos de ejecución al script:
-
-> chmod u+x vwbackup.sh
+```shell
+chmod u+x vwbackup.sh
+```
 > 4 -rw**x**r--r--  1 user group  485 mar 16 18:35 vwbackup.sh
 
  - Edita el script y al comienzo del mismo tienes los parámetros que debes proporcionar.
@@ -63,7 +67,9 @@ El script contiene dos partes. Una de configuración previa y otra operacional d
 
 Para usar el modo depuración sólo hay que añadir el parámetro -d o --debug en la ejecución del script,
 
-> ./vwbackup.sh --debug
+```shell
+./vwbackup.sh --debug
+```
 
 Se evaluará la idoneidad de los parámetros, pero no se realizará el backup. De igual manera, en cada ejecución sin modo depuración activado también se evalúan los parámetros. Si se encuentra algún error el script parará su ejecución.
 
