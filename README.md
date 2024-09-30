@@ -31,11 +31,15 @@ Futuro:  podría elegirse si se quiere añadir un volcado de la base de datos a 
 
 ## Uso de VWBackup
 El script contiene dos partes. Una de configuración previa y otra operacional del propio backup. Por otro lado, el script tiene un modo depuración que nos servirá para chequear los parámetros sin realizar el backup propiamente.
-
- - Descarga el script del repositorio. 
+### Descarga
+ - Descarga el script del repositorio.
+```shell
+wget https://raw.githubusercontent.com/GuruYosh/vwbackup/refs/heads/main/vwbackup.sh
+```
  - Dale permisos de ejecución al script:
-
-> chmod u+x vwbackup.sh
+```shell
+chmod u+x vwbackup.sh
+```
 > 4 -rw**x**r--r--  1 user group  485 mar 16 18:35 vwbackup.sh
 
  - Edita el script y al comienzo del mismo tienes los parámetros que debes proporcionar.
@@ -44,7 +48,8 @@ El script contiene dos partes. Una de configuración previa y otra operacional d
  - Automatiza la ejecución del mismo mediante una tarea en cron, por ejemplo.
  
 
-**1. Configuración previa al backup**.  Al comienzo del script existen una serie de parámetros obligatorios y opcionales. Edita el fichero `vwbackup.sh` con tu editor favorito y modifica los parámetros según tu instalación y necesidades.
+### **1. Configuración previa al backup**
+Al comienzo del script existen una serie de parámetros obligatorios y opcionales. Edita el fichero `vwbackup.sh` con tu editor favorito y modifica los parámetros según tu instalación y necesidades.
 
 | Parámetro | Nota | Ejemplo |
 | -------------------|---------------------------------|-------------|
@@ -59,11 +64,13 @@ El script contiene dos partes. Una de configuración previa y otra operacional d
 > **Ruta absoluta**: ruta completa de un archivo o directorio desde el directorio raíz.
 > **Ruta relativa**: ruta de un archivo o directorio en relación con el directorio definido. Depende del directorio desde el cual se está ejecutando el comando.
 
-**2. Acceso al modo depuración o modo debug**
+### **2. Acceso al modo depuración o modo debug**
 
 Para usar el modo depuración sólo hay que añadir el parámetro -d o --debug en la ejecución del script,
 
-> ./vwbackup.sh --debug
+```shell
+./vwbackup.sh --debug
+```
 
 Se evaluará la idoneidad de los parámetros, pero no se realizará el backup. De igual manera, en cada ejecución sin modo depuración activado también se evalúan los parámetros. Si se encuentra algún error el script parará su ejecución.
 
@@ -98,7 +105,7 @@ Verificación con varios errores:
     
     La configuración inicial contiene errores (4)
 
-**3. Ejecución del script**
+### **3. Ejecución del script**
 
 Una vez revisados los parámetros proporcionados se realiza la copia de seguridad. Los pasos para realizarlo son los siguientes:
 
@@ -106,9 +113,28 @@ Una vez revisados los parámetros proporcionados se realiza la copia de segurida
  2. Se realiza el *empaquetado* y *compresión* de los ficheros que intervienen en el mismo (*ContainerDataDir*) mediante el comando *tar*, se comprime con el compresor elegido y se lleva al directorio elegido (*BackupDataDir*). Por defecto se utiliza *gzip* por ser el más común. Elige en los parámetros el que quieras de entre los disponibles.
  3. Arranca nuevamente el contenedor de *vaultwarden* si estuvo en ejecución.
 
-**4. Automatización del script y de las copias de seguridad**
+### **4. Automatización del script y de las copias de seguridad**
 
 Forma parte del mantenimiento de tu sistema. Puedes automatizar la ejecución diaria del mismo (*cron*) y mantener, por ejemplo, las últimas 7 copias y de la misma forma incluir tu copia de seguridad de *vaultwarden* en tu sistema de respaldos. Ya sabes la regla 3 ... 2 ... 1 :bomb::collision: ( [G](https://www.google.com/search?q=regla%203%202%201%20backup) [B](https://www.bing.com/search?q=regla%203%202%201%20backup) [D](https://www.google.com/search?q=regla%203%202%201%20backup) )
+
+### **5. Restauración de una copia de seguridad**
+- Este es un ejemplo que asume que estas usando *gzip* por ser el más común.
+#### Extracción
+- Solo debes ejecutar este comando
+```shell
+tar -xvf archivo.tar.gz -C /ruta/data
+```
+- donde:
+> `archivo.tar.gz` es el nombre del archivo del backup, y `/ruta/data` es la carpeta destino donde se va a depositar el contenido
+- Ejemplo:
+```shell
+tar -xvf vaultwarden_20240929201852.tar.gz -C ../test/
+```
+#### Visualizar contenido
+Si deseas visualizar el contenido de un respaldo, sin tener que extraer el contenido, puedes hacerlo de la sigueinte manera:
+```shell
+tar -tf vaultwarden_20240929201852.tar.gz
+```
 
 ## Contacto
 
