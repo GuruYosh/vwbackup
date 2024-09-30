@@ -115,7 +115,7 @@ Una vez revisados los parámetros proporcionados se realiza la copia de segurida
 
 ### **4. Automatización del script y de las copias de seguridad**
 
-Forma parte del mantenimiento de tu sistema. Puedes automatizar la ejecución diaria del mismo (*cron*) y mantener, por ejemplo, las últimas 7 copias y de la misma forma incluir tu copia de seguridad de *vaultwarden* en tu sistema de respaldos. Ya sabes la regla 3 ... 2 ... 1 :bomb::collision: ( [G](https://www.google.com/search?q=regla%203%202%201%20backup) [B](https://www.bing.com/search?q=regla%203%202%201%20backup) [D](https://www.google.com/search?q=regla%203%202%201%20backup) )
+Forma parte del mantenimiento de tu sistema. Puedes automatizar la ejecución diaria del mismo (*cron*) y mantener, por ejemplo, las últimas 7 copias y de la misma forma incluir tu copia de seguridad de *vaultwarden* en tu sistema de respaldos. Ya sabes la regla 3 ... 2 ... 1 :bomb::collision: ( [G](https://www.google.com/search?q=regla%203%202%201%20backup) [B](https://www.bing.com/search?q=regla%203%202%201%20backup) [D](https://duckduckgo.com/?t=ffab&q=regla+3+2+1+backup) )
 
 ### **5. Restauración de una copia de seguridad**
 - Este es un ejemplo que asume que estas usando *gzip* por ser el más común.
