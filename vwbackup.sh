@@ -212,6 +212,15 @@ if [[ "${MaxNumBackup}" -ge 1 ]]; then
 	fi
 fi
 
+# Logueamos espacio del directorio de backup y del último fichero
+
+if [[ "${ActiveLog}" -eq 1 ]]; then
+	DiskSpaceFile=$(du -sh ${BackupDataFile} | cut -f1 )
+	DiskSpaceDir=$(du -ch ${BackupDataDir}/${ContainerName}_* | grep total | cut -f1)
+	loggger "${msg_init}Tamaño del respaldo: ${DiskSpaceFile}"
+	loggger "${msg_init}Tamaño de ${BackupDataDir}: ${DiskSpaceDir}"
+fi
+
 # Arrancamos contenedor si estaba en ejecución
 
 if [[ ${ContainerWasRunning} -eq 1 ]]; then
