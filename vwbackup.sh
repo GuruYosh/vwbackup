@@ -1,9 +1,12 @@
 #!/bin/bash
 
 ########################################################################################
-# VWBACKUP v1.0
-# Realiza una copia de seguridad de los datos del contenedor docker de [Vaultwarden
+# VWBACKUP v1.1
+# Realiza una copia de seguridad de los datos del contenedor docker de Vaultwarden
 # 
+# Más información:
+#		GitHub: https://github.com/GuruYosh/vwbackup
+#		Telegram: https://t.me/vaultwarden_es
 # ######################################################################################
 
 # PARÁMETROS PARA DEFINIR FUNCIONAMIENTO DEL BACKUP
@@ -43,6 +46,10 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
+# Nombre / Versión del script de backup
+readonly ScriptName="vwbackup"
+readonly ScriptVersion="1.1" # alfa \u03B1 beta \u03B2
+
 # Algoritmos definidos y usados por el comando tar: gzip, bzip2, xz
 # Extensiones según algoritmo usado en comando tar
 declare -rA Compressor=(
@@ -54,17 +61,44 @@ declare -rA Compressor=(
 # Directorios relativos (rel) o Ruta Absoluta (abs)
 readonly PathDirList="relativa absoluta"
 
-# Nombre del script de backup
-readonly ScriptName="vwbackup"
-readonly ScriptVersion="1.0" # alfa \u03B1 beta \u03B2
-
 # Cabecera de los mensajes
 readonly msg_init="${ScriptName} | "
+
+# Caracteres especiales
+readonly gCheck="\e[32m✔\e[0m" # Check verde
+readonly rCross="\e[31m✘\e[0m" # Aspa roja
 
 # Función para loguear en fichero definido
 function loggger { echo "$(date +"%F %T")" "$1" >> "$LogFile"; }
 
 # COMPROBACIONES PREVIAS Y ERRORES
+
+# Aplicaciones instaladas obligatorias (requeridas) y opcionales para el funcionamiento del script
+
+readonly cmdRequired=("docker" "tar" "du")  # necesarias
+readonly cmdOptional=("gzip" "bzip2" "xz")  # opcionales según elijamos en la configuración
+
+cmdRequiredError=()
+cmdOptionalError=()
+appError=0
+
+for cmd in "${cmdRequired[@]}"; do
+    if ! [ "$(which "${cmd}")" ]; then cmdRequiredError+=("${cmd}"); appError=1; fi
+done
+for cmd in "${cmdOptional[@]}"; do
+    if ! [ "$(which "${cmd}")" ]; then cmdOptionalError+=("${cmd}"); appError=1; fi
+done
+
+if [[ $appError -eq 1 ]]; then
+	echo -e "${ScriptName} | ${ScriptVersion}" 
+	echo "ERRORES DE DEPENDENCIA"
+	[[ ${#cmdRequiredError[@]} -ne 0 ]] && echo -e "${rCross} Aplicaciones REQUERIDAS: ${cmdRequiredError[@]} (\e[31mInstálelas según su OS\e[0m)" || echo -e "${gCheck} Aplicaciones REQUERIDAS: ${cmdRequired[@]} (\e[32mNo se requiere acción\e[0m)"
+	[[ ${#cmdOptionalError[@]} -ne 0 ]] && echo -e "${rCross} Aplicaciones OPCIONALES: ${cmdOptionalError[@]} (\e[31mRevise e instale si son necesarias para su configuración\e[0m)" || echo -e "${gCheck} Aplicaciones OPCIONALES: ${cmdOptional[@]} (\e[32mNo se requiere acción\e[0m)"
+
+	echo -e "\nLa ejecución del script no seguirá hasta haber resuelto los errores de dependencia de las aplicaciones REQUERIDAS."
+	echo -e "> > > > > > > \e[31mFIX IT & ENJOY !!\e[0m"
+	exit 100
+fi
 
 # Modo Debug sólo para ver si todo está "bien" configurado aparentemente
 
@@ -109,8 +143,6 @@ if ! [[ "$MaxNumBackup" =~ ^(0|[1-9][0-9]*)$ && "$MaxNumBackup" -ge 0 ]]; then e
 if [[ ${DebugMode} -eq 1 || ${#errortype} -ge 1 ]]; then
 
 	msg=""
-	gCheck="\e[32m✔\e[0m" # Check verde
-	rCross="\e[31m✘\e[0m" # Aspa roja
 
 	echo -e "${ScriptName} | ${ScriptVersion}"
 
@@ -187,12 +219,17 @@ PathRelDir=""  # "." para todos los ficheros del path relativo
 if [[ "${PathDir}" == "relativa" ]]; then PathRelMod="-C"; PathRelDir="."; fi
 
 if tar -c"${CompressionMod}"f "${BackupDataFile}" ${PathRelMod} "${ContainerDataDir%%/}/" "${PathRelDir}" > /dev/null 2>&1; then
-	[[ "${ActiveLog}" -eq 1 ]] && loggger "${msg_init}Backup realizado correctamente en ${BackupDataFile}"
+	if [[ "${ActiveLog}" -eq 1 ]]; then
+		loggger "${msg_init}Backup realizado correctamente en ${BackupDataFile}"
+		# Tamaño del fichero
+		DiskSpaceFile=$(du -sh "${BackupDataFile}" | cut -f1 )
+		loggger "${msg_init}Tamaño del respaldo: ${DiskSpaceFile}"
+	fi
 else 
 	[[ "${ActiveLog}" -eq 1 ]] && loggger "${msg_init}Error al realizar backup en ${BackupDataFile}"
 fi
 
-# Rotación de backups. Se dejan los últimos MaxNumBackup si > 0
+# Rotación de backups. Se dejan los últimos MaxNumBackup ficheros si > 0
 
 if [[ "${MaxNumBackup}" -ge 1 ]]; then
 	if cd "${BackupDataDir}" > /dev/null 2>&1; then
@@ -212,13 +249,13 @@ if [[ "${MaxNumBackup}" -ge 1 ]]; then
 	fi
 fi
 
-# Logueamos espacio del directorio de backup y del último fichero
+# Logueamos espacio del directorio de backup
 
 if [[ "${ActiveLog}" -eq 1 ]]; then
-	DiskSpaceFile=$(du -sh ${BackupDataFile} | cut -f1 )
-	DiskSpaceDir=$(du -ch ${BackupDataDir}/${ContainerName}_* | grep total | cut -f1)
-	loggger "${msg_init}Tamaño del respaldo: ${DiskSpaceFile}"
-	loggger "${msg_init}Tamaño de ${BackupDataDir}: ${DiskSpaceDir}"
+	DU_output=$(du -ch ${BackupDataDir}/${ContainerName}_*)
+	DiskSpaceDir=$(echo "${DU_output}" | grep total | cut -f1)
+	NumFilesInBackup=$(echo "${DU_output}" | grep -c ${ContainerName})
+	loggger "${msg_init}Tamaño de ${BackupDataDir}: ${DiskSpaceDir} - ${NumFilesInBackup} archivos (Rotación: ${MaxNumBackup})"
 fi
 
 # Arrancamos contenedor si estaba en ejecución
@@ -227,6 +264,6 @@ if [[ ${ContainerWasRunning} -eq 1 ]]; then
 	if docker start ${ContainerName} > /dev/null 2>&1; then
 		[[ "${ActiveLog}" -eq 1 ]] && loggger "${msg_init}Arrancando contenedor ${ContainerName}"
 	else
-		[[ "${ActiveLog}" -eq 1 ]] && loggger "${msg_init}Error al arrancan contenedor ${ContainerName}"
+		[[ "${ActiveLog}" -eq 1 ]] && loggger "${msg_init}Error al arrancar contenedor ${ContainerName}"
 	fi
 fi
