@@ -85,10 +85,20 @@ No son obligatorias, pero si necesarias para el funcionamiento del script. Ya qu
 |Aplicaciones opcionales|Acción|Paquete| Enlace|
 |--|--|--|--|
 |gzip|Compresión de ficheros .gz|gzip|[https://www.gnu.org/software/gzip/](https://www.gnu.org/software/gzip/)|
-|bzip2|Compresión de ficheros .bzip2|bzip2|[https://sourceforge.net/projects/bzip2/](https://sourceforge.net/projects/bzip2/)|
+|bzip2|Compresión de ficheros .bz2|bzip2|[https://sourceforge.net/projects/bzip2/](https://sourceforge.net/projects/bzip2/)|
 |xz|Compresión de ficheros .xz|xz-utils|[https://tukaani.org/xz/](https://tukaani.org/xz/)|
 
-### **2. Acceso al modo depuración o modo debug**
+Un ejemplo de parada del script con errores, *que ya te comento que es muy raro que ocurra* y que las aplicaciones/comandos utilizados no estén accesibles o instalados:
+
+    vwbackup | 1.1
+    ERRORES DE DEPENDENCIA
+    ✘ Aplicaciones REQUERIDAS: du (Instálelas según su OS)
+    ✘ Aplicaciones OPCIONALES: gzip (Revise e instale si son necesarias para su configuración)
+    
+    La ejecución del script no seguirá hasta haber resuelto los errores de dependencia de las aplicaciones REQUERIDAS.
+    > > > > > > > FIX IT & ENJOY !!
+
+### **3. Acceso al modo depuración o modo debug**
 
 Para usar el modo depuración sólo hay que añadir el parámetro -d o --debug en la ejecución del script,
 
@@ -129,19 +139,31 @@ Verificación con varios errores:
     
     La configuración inicial contiene errores (4)
 
-### **3. Ejecución del script**
+### **4. Ejecución del script**
 
 Una vez revisados los parámetros proporcionados se realiza la copia de seguridad. Los pasos para realizarlo son los siguientes:
 
- 1. Parar el contenedor de *vaultwarden* si este está en ejecución en el sistema.
+ 1. Detener el contenedor de *vaultwarden* si está en ejecución en el sistema.
  2. Se realiza el *empaquetado* y *compresión* de los ficheros que intervienen en el mismo (*ContainerDataDir*) mediante el comando *tar*, se comprime con el compresor elegido y se lleva al directorio elegido (*BackupDataDir*). Por defecto se utiliza *gzip* por ser el más común. Elige en los parámetros el que quieras de entre los disponibles.
  3. Arranca nuevamente el contenedor de *vaultwarden* si estuvo en ejecución.
 
-### **4. Automatización del script y de las copias de seguridad**
+### **5. Registro de ejecución del script (logfile)**
+Uno de los parámetros del script proporciona la posibilidad de registrar los eventos de ejecución del mismo. De ello se encarga el parámetro *LogFile*. Es la ruta completa del fichero donde se hará el registro de eventos. El fichero debe estar creado y el usuario que lanza el script debe tener permisos de escritura. Por defecto o si no quieres este parámetro está vacío, es decir `LogFile=""`
+
+Un ejemplo de registro sin errores:
+
+    2024-10-05 14:57:39 vwbackup | Contenedor vaultwarden parado
+    2024-10-05 14:57:41 vwbackup | Backup realizado correctamente en /home/pi/backup/vaultwarden_20241005145739.tar.bz2
+    2024-10-05 14:57:41 vwbackup | Tamaño del respaldo: 928K
+    2024-10-05 14:57:41 vwbackup | Rotación de backup: 1 fichero/s borrado/s
+    2024-10-05 14:57:41 vwbackup | Tamaño de /home/pi/backup/: 6,4M - 7 archivos (Rotación: 7)
+    2024-10-05 14:57:43 vwbackup | Arrancando contenedor vaultwarden
+
+### **6. Automatización del script y de las copias de seguridad**
 
 Forma parte del mantenimiento de tu sistema. Puedes automatizar la ejecución diaria del mismo (*cron*) y mantener, por ejemplo, las últimas 7 copias y de la misma forma incluir tu copia de seguridad de *vaultwarden* en tu sistema de respaldos. Ya sabes la regla 3 ... 2 ... 1 :bomb::collision: ( [G](https://www.google.com/search?q=regla%203%202%201%20backup) [B](https://www.bing.com/search?q=regla%203%202%201%20backup) [D](https://duckduckgo.com/?t=ffab&q=regla+3+2+1+backup) )
 
-### **5. Restauración de una copia de seguridad**
+### **7. Restauración de una copia de seguridad**
 - Este es un ejemplo que asume que estas usando *gzip* por ser el más común.
 #### Extracción
 - Solo debes ejecutar este comando
