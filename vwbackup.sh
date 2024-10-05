@@ -71,7 +71,7 @@ readonly rCross="\e[31m✘\e[0m" # Aspa roja
 # Función para loguear en fichero definido
 function loggger { echo "$(date +"%F %T")" "$1" >> "$LogFile"; }
 
-# COMPROBACIONES PREVIAS Y ERRORES
+# COMPROBACIONES PREVIAS Y ERRORES DE CONFIGURACIÓN
 
 # Aplicaciones instaladas obligatorias (requeridas) y opcionales para el funcionamiento del script
 
