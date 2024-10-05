@@ -1,0 +1,27 @@
+name: Update README version
+
+on:
+  push:
+    paths:
+      - 'vwbackup.sh'  # Se ejecuta cuando este archivo cambia
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Necesario para push
+
+      - name: Update version in README
+        run: |
+          # Extraer la versión del script
+          VERSION=$(grep -oP '(?<=ScriptVersion=").*?(?=")' vwbackup.sh)
+          sed -i "s/VWBACKUP v[0-9.]\+/vwbackup.sh v$VERSION/" README.md
+
+      - name: Commit and push if changed
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add README.md
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update version in README [skip ci]" && git push)
