@@ -84,7 +84,7 @@ No son obligatorias, pero si necesarias para el funcionamiento del script. Ya qu
 
 |Aplicaciones opcionales|Acción|Paquete| Enlace|
 |--|--|--|--|
-|gzip|Compresión de ficheros gzip|gzip|[https://www.gnu.org/software/gzip/](https://www.gnu.org/software/gzip/)|
+|gzip|Compresión de ficheros .gz|gzip|[https://www.gnu.org/software/gzip/](https://www.gnu.org/software/gzip/)|
 |bzip2|Compresión de ficheros .bzip2|bzip2|[https://sourceforge.net/projects/bzip2/](https://sourceforge.net/projects/bzip2/)|
 |xz|Compresión de ficheros .xz|xz-utils|[https://tukaani.org/xz/](https://tukaani.org/xz/)|
 
