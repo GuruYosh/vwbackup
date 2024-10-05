@@ -82,12 +82,11 @@ De igual manera y dado que para la ejecución correcta del script son necesarias
 **Aplicaciones opcionales**
 No son obligatorias, pero si necesarias para el funcionamiento del script. Ya que son las utilidades de compresión que se van a utilizar para comprimir el fichero *tar* deberán estar instaladas según desee configurar el script. En la mayoría de las distribuciones están instaladas. Si necesita instalar alguna el paquete necesario está indicado.
 
-|Aplicación|Acción|Paquete| Enlace|
+|Aplicaciones opcionales|Acción|Paquete| Enlace|
 |--|--|--|--|
-|OPCIONALES|Compresión de ficheros||
-|gzip|-|gzip|[https://www.gnu.org/software/gzip/](https://www.gnu.org/software/gzip/)|
-|bzip2|-|bzip2|[https://sourceforge.net/projects/bzip2/](https://sourceforge.net/projects/bzip2/)|
-|xz|-|xz-utils|[https://tukaani.org/xz/](https://tukaani.org/xz/)|
+|gzip|Compresión de ficheros gzip|gzip|[https://www.gnu.org/software/gzip/](https://www.gnu.org/software/gzip/)|
+|bzip2|Compresión de ficheros .bzip2|bzip2|[https://sourceforge.net/projects/bzip2/](https://sourceforge.net/projects/bzip2/)|
+|xz|Compresión de ficheros .xz|xz-utils|[https://tukaani.org/xz/](https://tukaani.org/xz/)|
 
 ### **2. Acceso al modo depuración o modo debug**
 
