@@ -17,7 +17,7 @@ jobs:
         run: |
           # Extraer la versión del script
           VERSION=$(grep -oP '(?<=ScriptVersion=").*?(?=")' vwbackup.sh)
-          sed -i "s/VWBACKUP v[0-9.]\+/vwbackup.sh v$VERSION/" README.md
+          sed -i "s/VWBackup v[0-9.]\+/VWBackup v$VERSION/" README.md
 
       - name: Commit and push if changed
         run: |
