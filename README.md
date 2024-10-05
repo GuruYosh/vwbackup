@@ -27,7 +27,7 @@ Características que permite el script:
  - Rotación de ficheros en el directorio de backups con el fin de mantener un número limitado de copias
  - Registro de eventos del script en un fichero determinado.
 
-Futuro:  podría elegirse si se quiere añadir un volcado de la base de datos a la carpeta donde se guardan los backup.
+Futuro: podría elegirse si se quiere añadir un volcado de la base de datos a la carpeta donde se guardan los backup.
 
 ## Uso de VWBackup
 El script contiene dos partes. Una de configuración previa y otra operacional del propio backup. Por otro lado, el script tiene un modo depuración que nos servirá para chequear los parámetros sin realizar el backup propiamente.
@@ -42,8 +42,9 @@ chmod u+x vwbackup.sh
 ```
 > 4 -rw**x**r--r--  1 user group  485 mar 16 18:35 vwbackup.sh
 
- - Edita el script y al comienzo del mismo tienes los parámetros que debes proporcionar.
- - Ejecuta el script con el modo depuración activado para evaluar los parámetros.
+ - Edita el script. Al comienzo del mismo tienes los parámetros que debes proporcionar.
+ - Ejecuta el script con el modo depuración activado para evaluar los parámetros (-d o --debug)
+ - Con cada ejecución del script se evaluan las dependecias obligatorias y opcionales del mismo para poder funcionar correctamente
  - Prueba que el script funciona y verifica el resultado.
  - Automatiza la ejecución del mismo mediante una tarea en cron, por ejemplo.
  
@@ -64,6 +65,30 @@ Al comienzo del script existen una serie de parámetros obligatorios y opcionale
 > **Ruta absoluta**: ruta completa de un archivo o directorio desde el directorio raíz.
 > **Ruta relativa**: ruta de un archivo o directorio en relación con el directorio definido. Depende del directorio desde el cual se está ejecutando el comando.
 
+### **2. Dependencias del script**
+
+De igual manera y dado que para la ejecución correcta del script son necesarias ciertas aplicaciones/comandos accesibles en el sistema, estos se evalúan siempre al comienzo, dando un aviso y parando el script antes de continuar. Por su uso existen dos tipos. Las ***obligatorias*** o **requeridas** y las ***opcionales***.
+
+**Aplicaciones requeridas**
+
+: Es muy probable que ya estén instaladas en el sistema, pero nunca está de más revisarlo. Instálelas si faltasen. Dependiendo de la distribución Linux usada se hará de una u otra manera. Se indica como se llama el paquete a instalar
+
+|Aplicación|Acción|Paquete| Enlace|
+|--|--|--|--|
+|docker|crear y gestionar contenedores y la virtualización|docker, docker-ce, docker.io|[https://www.docker.com/](https://www.docker.com/)|
+|tar|empaquetado de archivos y directorios|tar|[https://www.gnu.org/software/tar/](https://www.gnu.org/software/tar/)|
+|du|uso de disco|coreutils|[https://www.gnu.org/software/coreutils/manual/coreutils.html#du-invocation](https://www.gnu.org/software/coreutils/manual/coreutils.html#du-invocation)|
+
+**Aplicaciones opcionales**
+No son obligatorias, pero si necesarias para el funcionamiento del script. Ya que son las utilidades de compresión que se van a utilizar para comprimir el fichero *tar* deberán estar instaladas según desee configurar el script. En la mayoría de las distribuciones están instaladas. Si necesita instalar alguna el paquete necesario está indicado.
+
+|Aplicación|Acción|Paquete| Enlace|
+|--|--|--|--|
+|OPCIONALES|Compresión de ficheros||
+|gzip|-|gzip|[https://www.gnu.org/software/gzip/](https://www.gnu.org/software/gzip/)|
+|bzip2|-|bzip2|[https://sourceforge.net/projects/bzip2/](https://sourceforge.net/projects/bzip2/)|
+|xz|-|xz-utils|[https://tukaani.org/xz/](https://tukaani.org/xz/)|
+
 ### **2. Acceso al modo depuración o modo debug**
 
 Para usar el modo depuración sólo hay que añadir el parámetro -d o --debug en la ejecución del script,
@@ -72,7 +97,7 @@ Para usar el modo depuración sólo hay que añadir el parámetro -d o --debug e
 ./vwbackup.sh --debug
 ```
 
-Se evaluará la idoneidad de los parámetros, pero no se realizará el backup. De igual manera, en cada ejecución sin modo depuración activado también se evalúan los parámetros. Si se encuentra algún error el script parará su ejecución.
+Se evaluará la idoneidad de los parámetros, pero no se realizará el backup.
 
 **Ejemplos**
 
