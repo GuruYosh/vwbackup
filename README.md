@@ -1,5 +1,5 @@
 ![](https://github.com/GuruYosh/vwbackup/blob/main/resource/vwbackup_logo.png?raw=true)
-# VWBackup
+# VWBackup v0.0
 
 Realiza fácilmente una copia de seguridad de los datos del contenedor docker de [Vaultwarden](https://github.com/dani-garcia/vaultwarden).
 
