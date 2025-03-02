@@ -59,7 +59,7 @@ Al comienzo del script existen una serie de parámetros obligatorios y opcionale
 | BackupDataDir | Path del directorio donde se guardarán los ficheros del backup. El usuario que lanza el script debe tener permisos de escritura |"/home/user/backup/"|
 |CompressionType|Algoritmo de compresión utilizado para comprimir el empaquetado de los ficheros de tar. Disponibles: gzip, bzip2 y xz| Por defecto se utiliza gzip|
 |PathDir| Uso de ruta relativa o ruta absoluta al crear el backup *| Por defecto se utiliza la ruta relativa|
-|LogFile| Ruta completa del fichero donde se hará el registro de eventos. El fichero debe estar creado y el usuario que lanza el script debe tener permisos de escritura. Si está vacío no hay registro de eventos.|/path_directorio_docker/vaultwarden/vwbackup.log/". Por defecto LogFile=""|
+|LogFile| Ruta completa del fichero donde se hará el registro de eventos. El fichero debe estar creado y el usuario que lanza el script debe tener permisos de escritura. Si está vacío no hay registro de eventos. Considera la rotación de logs mediante la utilidad ***logrotate***|/path_directorio_docker/vaultwarden/vwbackup.log/". Por defecto LogFile=""|
 |MaxNumBackup|Rotación de backups. Mantiene un número determinado de ficheros en la carpeta de backups. El valor 0 se utilizará para no realizar rotación.|Por defecto será 0|
 
 > **Ruta absoluta**: ruta completa de un archivo o directorio desde el directorio raíz.
